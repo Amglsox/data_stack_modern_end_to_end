@@ -34,3 +34,11 @@ start-airflow: ## Start Airflow
 .PHONY: down-airflow
 down-airflow: ## Down Airflow
 	docker-compose -f ./airflow/docker-compose.yaml down --remove-orphans
+
+.PHONY: clone-airbyte
+clone-airbyte:
+	git clone https://github.com/airbytehq/airbyte.git
+
+.PHONY:
+start-airbyte:
+	./airbyte/run-ab-platform.sh
