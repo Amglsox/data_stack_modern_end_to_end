@@ -27,7 +27,7 @@ with DAG(
         airbyte_conn_id="airbyte_conn_example",
         airbyte_job_id=async_money_to_json.output,
     )
-    GCSToBigQueryOperator(
+    tb_vendas_bronze = GCSToBigQueryOperator(
         task_id="gcs_to_bq_job_bronze_tb_vendas",
         bucket="lucas-datalake-transient",
         source_objects=f"shopping/tb_vendas/{EXECUTION_DATE_INIT}*.parquet",
@@ -37,7 +37,7 @@ with DAG(
         write_disposition="WRITE_APPEND",
         autodetect=True,
     )
-    GCSToBigQueryOperator(
+    tb_customer_bronze = GCSToBigQueryOperator(
         task_id="gcs_to_bq_job_bronze_tb_customer",
         bucket="lucas-datalake-transient",
         source_objects=f"shopping/tb_customer/{EXECUTION_DATE_INIT}*.parquet",
@@ -48,4 +48,4 @@ with DAG(
         autodetect=True,
     )
 
-    async_money_to_json >> airbyte_sensor
+    async_money_to_json >> airbyte_sensor >> [tb_vendas_bronze, tb_customer_bronze]
