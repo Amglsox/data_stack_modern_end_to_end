@@ -4,6 +4,8 @@ from airflow import DAG
 from airflow.providers.airbyte.operators.airbyte import AirbyteTriggerSyncOperator
 from airflow.providers.airbyte.sensors.airbyte import AirbyteJobSensor
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+from airflow.operators.empty import EmptyOperator
+from cosmos.providers.dbt.task_group import DbtTaskGroup
 
 
 EXECUTION_DATE_INIT = "{{ dag_run.logical_date.strftime('%Y_%m_%d') }}"
@@ -15,6 +17,8 @@ with DAG(
     schedule_interval="@daily",
     start_date=datetime(2023, 5, 11),
 ) as dag:
+    
+    start_dag = EmptyOperator(task_id="start")
 
     async_money_to_json = AirbyteTriggerSyncOperator(
         task_id="airbyte_async_data_vendas",
@@ -48,5 +52,11 @@ with DAG(
         write_disposition="WRITE_APPEND",
         autodetect=True,
     )
+    dbt_tg = DbtTaskGroup(
+        dbt_project_name="project_vendas",
+        conn_id="airflow_db"
+    )
 
-    async_money_to_json >> airbyte_sensor >> [tb_vendas_bronze, tb_customer_bronze]
+    fim_dag = EmptyOperator(task_id="fim_dag")
+    
+    start_dag >> async_money_to_json >> airbyte_sensor >> [tb_vendas_bronze, tb_customer_bronze] >> dbt_tg >> fim_dag

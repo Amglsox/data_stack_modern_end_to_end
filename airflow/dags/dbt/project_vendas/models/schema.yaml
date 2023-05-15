@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: fat_vendas_por_shopping_categoria.sql
+    columns:
+      - name: ds_categoria
+        tests:
+          - accepted_values:
+            values: ['Cosmetics','Food & Beverage','Books','Shoes','Clothing','Toys','Souvenir','Technology']

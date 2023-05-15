@@ -1,0 +1,13 @@
+project_vendas:
+  outputs:
+    dev:
+      dataset: bronze_layer
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: US
+      method: oauth
+      priority: interactive
+      project: lucas-datalake
+      threads: 2
+      type: bigquery
+  target: dev
