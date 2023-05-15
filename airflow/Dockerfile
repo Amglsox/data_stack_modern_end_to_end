@@ -7,4 +7,4 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 USER airflow
-RUN pip install --no-cache-dir apache-airflow[databricks] apache-airflow-providers-airbyte astronomer-cosmos[dbt-all]
+RUN pip install --no-cache-dir protobuf==3.20.* apache-airflow[databricks] apache-airflow-providers-airbyte astronomer-cosmos[dbt-bigquery]
