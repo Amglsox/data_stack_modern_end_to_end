@@ -6,14 +6,14 @@ from airflow.providers.airbyte.sensors.airbyte import AirbyteJobSensor
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 
-EXECUTION_DATE_INIT = "{{ dag_run.logical_date.strftime('Y_%m_%d') }}"
+EXECUTION_DATE_INIT = "{{ dag_run.logical_date.strftime('%Y_%m_%d') }}"
 
 
 with DAG(
     dag_id="airbyte_vendas_example",
     default_args={"owner": "airflow"},
     schedule_interval="@daily",
-    start_date=datetime(2023, 5, 13),
+    start_date=datetime(2023, 5, 11),
 ) as dag:
 
     async_money_to_json = AirbyteTriggerSyncOperator(
